@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golodash/galidator"
 	_ "github.com/golodash/galidator"
+	"github.com/morkid/paginate"
 	_ "golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"net/http"
@@ -26,11 +27,15 @@ func NewHandlerUser(db *gorm.DB) Handler {
 }
 
 func (h *Handler) FindALl(c *gin.Context) {
+
+	pg := paginate.New(&paginate.Config{
+		DefaultSize: 12,
+	})
 	var user []domain.User
-	h.DB.Find(&user)
+	model := h.DB.Model(&user)
 	c.JSON(http.StatusOK, gin.H{
 		"message": "success",
-		"data":    user,
+		"data":    pg.With(model).Request(c.Request).Response(&[]domain.User{}),
 	})
 }
 
@@ -50,7 +55,7 @@ func (h *Handler) FindById(c *gin.Context) {
 }
 
 func (h *Handler) Create(c *gin.Context) {
-	var payload *domain.User
+	var payload domain.User
 
 	err := c.BindJSON(&payload)
 
@@ -105,11 +110,35 @@ func (h *Handler) Update(c *gin.Context) {
 		return
 	}
 
-	reqData := user
-	c.Bind(&reqData)
-	h.DB.Model(&user).Where("id=?", id).Updates(reqData)
+	payload := user
+	err := c.BindJSON(&payload)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": customizer.DecryptErrors(err),
+		})
+		c.Abort()
+		return
+	}
+	h.DB.Model(&user).Where("id=?", id).Updates(payload)
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Update data success",
-		"data":    reqData,
+		"data":    payload,
+	})
+}
+
+func (h *Handler) Delete(c *gin.Context) {
+	var user domain.User
+	id := c.Param("id")
+
+	if err := h.DB.Where("id = ?", id).First(&user).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "user not found!"})
+		return
+	}
+
+	payload := user
+	h.DB.Delete(&payload, "id=?", id)
+	c.JSON(http.StatusOK, gin.H{
+		"message": "success delete",
 	})
 }

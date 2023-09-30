@@ -13,6 +13,10 @@ func InitUserRoutes(db *gorm.DB, router *gin.RouterGroup) {
 	router.POST("/user", user.Create)
 	router.GET("/user/:id", user.FindById)
 	router.PUT("/user/:id", user.Update)
-	//router.DELETE("/user/:id", userHandler.Delete)
+	router.DELETE("/user/:id", user.Delete)
+
+}
+
+func InitLogisticRoutes(db *gorm.DB, router *gin.RouterGroup) {
 
 }
