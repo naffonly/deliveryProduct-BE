@@ -2,6 +2,7 @@ package routes
 
 import (
 	"deliveryProduct/app/logisticHandler"
+	"deliveryProduct/app/transactionHandler"
 	"deliveryProduct/app/userHandler"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -10,6 +11,7 @@ import (
 func InitRoutes(db *gorm.DB, router *gin.RouterGroup) {
 	userRoutes(db, router)
 	logisticRoutes(db, router)
+	transactionRoutes(db, router)
 }
 
 func userRoutes(db *gorm.DB, router *gin.RouterGroup) {
@@ -31,4 +33,13 @@ func logisticRoutes(db *gorm.DB, router *gin.RouterGroup) {
 	router.POST("/logistic", logistic.Create)
 	router.PUT("/logistic/:id", logistic.Update)
 	router.DELETE("/logistic/:id", logistic.Delete)
+}
+
+func transactionRoutes(db *gorm.DB, router *gin.RouterGroup) {
+	transaction := transactionHandler.NewHandlerUser(db)
+
+	router.GET("/transaction", transaction.FindAll)
+	router.GET("/transaction/:id", transaction.FindById)
+	router.POST("/transaction", transaction.Create)
+	router.PUT("/transaction/upload-image/:id", transaction.UploadImage)
 }

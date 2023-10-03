@@ -28,20 +28,22 @@ func InitDB() *gorm.DB {
 }
 
 func Migration(db *gorm.DB) {
-	fmt.Println("Migration")
-	err := db.AutoMigrate(&domain.Logistic{}, &domain.User{}, &domain.Product{}, &domain.Transaction{}, &domain.TrackingDelivery{})
+	//fmt.Println("Migration")
+	//err := db.AutoMigrate(&domain.Logistic{}, &domain.User{}, &domain.Product{}, &domain.Transaction{}, &domain.TrackingDelivery{})
 	//fmt.Print("Drop Table")
-	//err := db.Migrator().DropTable(&domain.TrackingDelivery{}, &domain.Transaction{}, &domain.Logistic{}, &domain.Product{})
-	if err != nil {
+	//err := db.Migrator().DropTable(&domain.TrackingDelivery{}, &domain.Transaction{}, &domain.Product{})
+	//if err != nil {
+	//	return
+	//}
+	//fmt.Print("Seeding")
+	fmt.Println("Migration")
+
+	errs := db.AutoMigrate(&domain.Logistic{}, &domain.User{}, &domain.Product{}, &domain.Transaction{}, &domain.TrackingDelivery{})
+	if errs != nil {
 		return
 	}
 	//fmt.Print("Seeding")
-	//errs := db.AutoMigrate(&domain.Logistic{}, &domain.User{}, &domain.Product{}, &domain.Transaction{}, &domain.TrackingDelivery{})
-	//if errs != nil {
-	//	return
-	//}
-	fmt.Print("Seeding")
-	seederUser(db)
+	//seederUser(db)
 
 }
 

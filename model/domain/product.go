@@ -8,7 +8,7 @@ import (
 
 type Product struct {
 	ID            uuid.UUID      `gorm:"type:uuid;primary_key;default:gen_random_uuid()"`
-	Weight        int            `json:"Weight" gorm:"type:varchar(100);Not null" binding:"required"`
+	Weight        string         `json:"weight" gorm:"type:varchar(100);Not null" binding:"required"`
 	AddressVendor string         `json:"address_vendor" gorm:"type:varchar(100);Not null" binding:"required"`
 	NameVendor    string         `json:"name_vendor" gorm:"type:varchar(100);Not null" binding:"required"`
 	CreateAt      time.Time      `json:"create_at" gorm:"autoCreateTime"`
