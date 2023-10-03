@@ -105,7 +105,13 @@ func (h *Handler) Update(c *gin.Context) {
 		c.Abort()
 		return
 	}
-	h.DB.Model(&data).Where("id=?", id).Updates(payload)
+
+	newPayload := domain.Logistic{
+		Name:       payload.Name,
+		Address:    payload.Address,
+		PlatNumber: strings.ToUpper(payload.PlatNumber),
+	}
+	h.DB.Model(&payload).Where("id=?", id).Updates(newPayload)
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Update data success",
 		"data":    payload,

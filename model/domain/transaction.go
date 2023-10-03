@@ -17,6 +17,7 @@ type Transaction struct {
 	LogisticID       uuid.UUID          `json:"logistic_id" gorm:"type:uuid" binding:"required"`
 	Status           string             `json:"status" gorm:"type:varchar(100);Not null" binding:"required"`
 	Price            string             `json:"price" gorm:"type:varchar(100);Not null" binding:"required"`
+	ImageDelivery    string             `json:"image_delivery" gorm:"type:varchar(100);Not null"`
 	CreateAt         time.Time          `json:"create_at" gorm:"autoCreateTime"`
 	UpdateAt         time.Time          `json:"update_at" gorm:"autoUpdateTime"`
 	DeleteAt         gorm.DeletedAt     `json:"delete_at"`
@@ -27,7 +28,7 @@ type Transaction struct {
 }
 
 type TransactionDto struct {
-	ID               uuid.UUID          `gorm:"type:uuid;primary_key;default:gen_random_uuid()"`
+	ID               uuid.UUID          `gorm:"type:uuid;sprimary_key;default:gen_random_uuid()"`
 	UserID           uuid.UUID          `json:"user_id" gorm:"type:uuid" binding:"required"`
 	ProductID        uuid.UUID          `json:"product_id" gorm:"type:uuid" binding:"required"`
 	LogisticID       uuid.UUID          `json:"logistic_id" gorm:"type:uuid" binding:"required"`
