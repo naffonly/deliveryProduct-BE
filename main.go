@@ -14,6 +14,7 @@ func SetupAppRouter() *gin.Engine {
 	db := db.InitDB()
 	router := gin.Default()
 	api := router.Group("api/v1")
-	routes.InitUserRoutes(db, api)
+	routes.InitRoutes(db, api)
+
 	return router
 }

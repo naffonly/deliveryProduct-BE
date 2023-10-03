@@ -1,21 +1,19 @@
-package userHandler
+package logisticHandler
 
 import (
 	"deliveryProduct/model/domain"
-	"deliveryProduct/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/golodash/galidator"
-	_ "github.com/golodash/galidator"
 	"github.com/morkid/paginate"
-	_ "golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"net/http"
+	"strings"
 	"time"
 )
 
 var (
 	g          = galidator.New()
-	customizer = g.Validator(domain.User{})
+	customizer = g.Validator(domain.Logistic{})
 	pg         = paginate.New(&paginate.Config{
 		DefaultSize: 12,
 	})
@@ -29,34 +27,31 @@ func NewHandlerUser(db *gorm.DB) Handler {
 	return Handler{DB: db}
 }
 
-func (h *Handler) FindALl(c *gin.Context) {
-
-	var user []domain.User
-	model := h.DB.Model(&user)
+func (h *Handler) FindAll(c *gin.Context) {
+	var payload []domain.Logistic
+	model := h.DB.Model(&payload)
 	c.JSON(http.StatusOK, gin.H{
 		"message": "success",
-		"data":    pg.With(model).Request(c.Request).Response(&[]domain.User{}),
+		"data":    pg.With(model).Request(c.Request).Response(&[]domain.Logistic{}),
 	})
 }
-
 func (h *Handler) FindById(c *gin.Context) {
-	var user domain.User
 	id := c.Param("id")
+	var payload domain.Logistic
 
-	if err := h.DB.Where("id = ?", id).First(&user).Error; err != nil {
+	if err := h.DB.Where("id = ?", id).First(&payload).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "user not found!"})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "success",
-		"data":    user,
+		"data":    payload,
 	})
 }
 
 func (h *Handler) Create(c *gin.Context) {
-	var payload domain.User
-
+	var payload domain.Logistic
 	err := c.BindJSON(&payload)
 
 	if err != nil {
@@ -67,50 +62,40 @@ func (h *Handler) Create(c *gin.Context) {
 		return
 	}
 
-	rs := h.DB.Where("email=?", payload.Email).First(&payload)
+	rs := h.DB.Where("plat_number=?", strings.ToUpper(payload.PlatNumber)).First(&payload)
 	if rs.RowsAffected > 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Email already exist",
+			"message": "Logistic already exist",
 		})
 		return
 	}
-
-	hashedPassword, err := utils.HashPassword(payload.Password)
-	if err != nil {
-		c.JSON(http.StatusBadGateway, gin.H{
-			"status":  "error",
-			"message": err.Error(),
-		})
-		return
-	}
-
 	now := time.Now()
-	newUser := domain.User{
-		Username:      payload.Username,
-		Email:         payload.Email,
-		Password:      hashedPassword,
-		AddressOffice: payload.AddressOffice,
-		CreateAt:      now,
-		UpdateAt:      now,
+
+	newPayload := domain.Logistic{
+		Name:       payload.Name,
+		Address:    payload.Address,
+		PlatNumber: strings.ToUpper(payload.PlatNumber),
+		CreateAt:   now,
+		UpdateAt:   now,
 	}
 
-	h.DB.Create(&newUser)
+	h.DB.Create(&newPayload)
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Create new user",
-		"data":    newUser,
+		"message": "Create new data logistic",
+		"data":    newPayload,
 	})
+
 }
-
 func (h *Handler) Update(c *gin.Context) {
-	var user domain.User
 	id := c.Param("id")
+	var data domain.Logistic
 
-	if err := h.DB.Where("id = ?", id).First(&user).Error; err != nil {
+	if err := h.DB.Where("id = ?", id).First(&data).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "user not found!"})
 		return
 	}
 
-	payload := user
+	payload := data
 	err := c.BindJSON(&payload)
 
 	if err != nil {
@@ -120,25 +105,26 @@ func (h *Handler) Update(c *gin.Context) {
 		c.Abort()
 		return
 	}
-	h.DB.Model(&user).Where("id=?", id).Updates(payload)
+	h.DB.Model(&data).Where("id=?", id).Updates(payload)
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Update data success",
 		"data":    payload,
 	})
+
 }
-
 func (h *Handler) Delete(c *gin.Context) {
-	var user domain.User
 	id := c.Param("id")
+	payload := domain.Logistic{}
 
-	if err := h.DB.Where("id = ?", id).First(&user).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "user not found!"})
+	if err := h.DB.Where("id=?", id).First(&payload).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": "Data not found",
+		})
 		return
 	}
 
-	payload := user
-	h.DB.Delete(&payload, "id=?", id)
+	h.DB.Delete(&payload)
 	c.JSON(http.StatusOK, gin.H{
-		"message": "success delete",
+		"message": "deleted data success",
 	})
 }
