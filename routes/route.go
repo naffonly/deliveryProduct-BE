@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"deliveryProduct/app/authHandler"
 	"deliveryProduct/app/logisticHandler"
 	"deliveryProduct/app/transactionHandler"
 	"deliveryProduct/app/userHandler"
@@ -12,6 +13,7 @@ func InitRoutes(db *gorm.DB, router *gin.RouterGroup) {
 	userRoutes(db, router)
 	logisticRoutes(db, router)
 	transactionRoutes(db, router)
+	authRoutes(db, router)
 }
 
 func userRoutes(db *gorm.DB, router *gin.RouterGroup) {
@@ -42,4 +44,10 @@ func transactionRoutes(db *gorm.DB, router *gin.RouterGroup) {
 	router.GET("/transaction/:id", transaction.FindById)
 	router.POST("/transaction", transaction.Create)
 	router.PUT("/transaction/upload-image/:id", transaction.UploadImage)
+}
+
+func authRoutes(db *gorm.DB, router *gin.RouterGroup) {
+	auth := authHandler.NewHandlerUser(db)
+	router.POST("/register", auth.Register)
+	router.POST("/login", auth.Login)
 }
