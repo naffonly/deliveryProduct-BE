@@ -32,5 +32,5 @@ type TransactionDto struct {
 	LogisticID uuid.UUID `json:"logistic_id" binding:"required"`
 	Status     string    `json:"status" binding:"required"`
 	Price      string    `json:"price" binding:"required"`
-	Product    Product   `json:"product"`
+	Product    Product   `json:"product" binding:"required"`
 }

@@ -7,7 +7,7 @@ import (
 )
 
 type Logistic struct {
-	ID         uuid.UUID      `gorm:"type:uuid;primary_key;default:gen_random_uuid()"`
+	ID         uuid.UUID      `json:"id" gorm:"type:uuid;primary_key;default:gen_random_uuid()"`
 	Name       string         `json:"name" gorm:"type:varchar(100);Not null" binding:"required"`
 	Address    string         `json:"address" gorm:"type:varchar(100);Not null" binding:"required"`
 	PlatNumber string         `json:"plat_number" gorm:"type:varchar(20);Not Null;UNIQUE" binding:"required"`
