@@ -9,11 +9,15 @@ import (
 	"gorm.io/gorm"
 )
 
-func InitRoutes(db *gorm.DB, router *gin.RouterGroup) {
+func InitRoutesPublic(db *gorm.DB, router *gin.RouterGroup) {
+	authRoutes(db, router)
+
+}
+func InitRoutesProtected(db *gorm.DB, router *gin.RouterGroup) {
 	userRoutes(db, router)
 	logisticRoutes(db, router)
 	transactionRoutes(db, router)
-	authRoutes(db, router)
+	profilRoutes(db, router)
 }
 
 func userRoutes(db *gorm.DB, router *gin.RouterGroup) {
@@ -44,6 +48,10 @@ func transactionRoutes(db *gorm.DB, router *gin.RouterGroup) {
 	router.GET("/transaction/:id", transaction.FindById)
 	router.POST("/transaction", transaction.Create)
 	router.PUT("/transaction/upload-image/:id", transaction.UploadImage)
+}
+func profilRoutes(db *gorm.DB, router *gin.RouterGroup) {
+	auth := authHandler.NewHandlerUser(db)
+	router.GET("/profil", auth.CurrentUser)
 }
 
 func authRoutes(db *gorm.DB, router *gin.RouterGroup) {

@@ -127,3 +127,21 @@ func (h *Handler) loginCheck(username string, password string) (string, error) {
 
 	return token, nil
 }
+func (h *Handler) CurrentUser(c *gin.Context) {
+	user_id, err := token.ExtractTokenID(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	user, err := domain.GetUserById(user_id, h.DB)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "success", "data": user})
+
+}

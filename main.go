@@ -2,6 +2,7 @@ package main
 
 import (
 	"deliveryProduct/db"
+	"deliveryProduct/middleware"
 	"deliveryProduct/routes"
 	"github.com/gin-gonic/gin"
 )
@@ -13,8 +14,12 @@ func main() {
 func SetupAppRouter() *gin.Engine {
 	db := db.InitDB()
 	router := gin.Default()
-	api := router.Group("api/v1")
-	routes.InitRoutes(db, api)
+
+	public := router.Group("/api")
+	routes.InitRoutesPublic(db, public)
+	protected := router.Group("api/v1")
+	protected.Use(middleware.AuthValid)
+	routes.InitRoutesProtected(db, protected)
 
 	return router
 }

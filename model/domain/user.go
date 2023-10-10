@@ -29,3 +29,17 @@ type RegistrationDTO struct {
 	Email           string `json:"email" binding:"required,email"`
 	AddressOffice   string `json:"address_office" binding:"required"`
 }
+
+func GetUserById(uid string, DB *gorm.DB) (User, error) {
+	var user User
+
+	if err := DB.Where("id=?", uid).First(&user).Error; err != nil {
+		return user, err
+	}
+
+	user.PrepareGive()
+	return user, nil
+}
+func (u *User) PrepareGive() {
+	u.Password = ""
+}
