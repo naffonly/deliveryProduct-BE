@@ -32,7 +32,7 @@ func NewHandlerUser(db *gorm.DB) Handler {
 func (h *Handler) FindAll(c *gin.Context) {
 	var payload []domain.Transaction
 
-	model := h.DB.Preload("User").Preload("Product").Preload("Logistic").Preload("TrackingDelivery").Find(&payload)
+	model := h.DB.Preload("User").Preload("Product").Preload("Logistic").Preload("TrackingDelivery", "delete_at IS NULL").Find(&payload)
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "success",

@@ -3,6 +3,7 @@ package routes
 import (
 	"deliveryProduct/app/authHandler"
 	"deliveryProduct/app/logisticHandler"
+	"deliveryProduct/app/trackingHandler"
 	"deliveryProduct/app/transactionHandler"
 	"deliveryProduct/app/userHandler"
 	"github.com/gin-gonic/gin"
@@ -18,6 +19,7 @@ func InitRoutesProtected(db *gorm.DB, router *gin.RouterGroup) {
 	logisticRoutes(db, router)
 	transactionRoutes(db, router)
 	profilRoutes(db, router)
+	trackingRoutes(db, router)
 }
 
 func userRoutes(db *gorm.DB, router *gin.RouterGroup) {
@@ -50,6 +52,13 @@ func transactionRoutes(db *gorm.DB, router *gin.RouterGroup) {
 	router.GET("/transaction/image/:id", transaction.GetFile)
 	router.PUT("/transaction/:id", transaction.Update)
 	router.DELETE("/transaction/:id", transaction.Delete)
+}
+
+func trackingRoutes(db *gorm.DB, router *gin.RouterGroup) {
+	tracking := trackingHandler.NewHandlerTracking(db)
+	router.POST("/tracking", tracking.Create)
+	router.PUT("/tracking/:id", tracking.Update)
+	router.DELETE("/tracking/:id", tracking.Delete)
 }
 func profilRoutes(db *gorm.DB, router *gin.RouterGroup) {
 	auth := authHandler.NewHandlerUser(db)
