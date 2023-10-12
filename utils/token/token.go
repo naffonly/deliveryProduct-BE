@@ -45,12 +45,6 @@ func GenerateToken(id uuid.UUID) (string, error) {
 		},
 		Id: id.String(),
 	}
-	//claim := jwt.StandardClaims{
-	//	ExpiresAt: time.Now().Add(time.Hour * time.Duration(token_lifespan)).Unix(),
-	//	Issuer:    id.String(),
-	//	IssuedAt:  time.Now().Unix(),
-	//}
-	//fmt.Println("====== genereate Issuer => " + claim.Issuer + "=======")
 	secret := os.Getenv("API_SECRET")
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(secret))
@@ -81,8 +75,6 @@ func ExtractTokenID(c *gin.Context) (string, error) {
 		return "", err
 	}
 	claims, ok := token.Claims.(jwt.MapClaims)
-	fmt.Println(claims["id"])
-	fmt.Println("===== ID Extrack")
 	if ok && token.Valid {
 		uid, _ := claims["id"].(string)
 		return uid, nil

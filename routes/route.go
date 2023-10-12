@@ -43,11 +43,13 @@ func logisticRoutes(db *gorm.DB, router *gin.RouterGroup) {
 
 func transactionRoutes(db *gorm.DB, router *gin.RouterGroup) {
 	transaction := transactionHandler.NewHandlerUser(db)
-
 	router.GET("/transaction", transaction.FindAll)
 	router.GET("/transaction/:id", transaction.FindById)
 	router.POST("/transaction", transaction.Create)
 	router.PUT("/transaction/upload-image/:id", transaction.UploadImage)
+	router.GET("/transaction/image/:id", transaction.GetFile)
+	router.PUT("/transaction/:id", transaction.Update)
+	router.DELETE("/transaction/:id", transaction.Delete)
 }
 func profilRoutes(db *gorm.DB, router *gin.RouterGroup) {
 	auth := authHandler.NewHandlerUser(db)
