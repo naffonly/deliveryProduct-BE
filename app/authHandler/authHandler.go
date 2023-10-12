@@ -21,7 +21,7 @@ type Handler struct {
 	DB *gorm.DB
 }
 
-func NewHandlerUser(db *gorm.DB) Handler {
+func NewHandler(db *gorm.DB) Handler {
 	return Handler{DB: db}
 }
 func (h *Handler) Register(c *gin.Context) {

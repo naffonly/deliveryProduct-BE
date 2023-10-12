@@ -21,7 +21,7 @@ type Handler struct {
 	DB *gorm.DB
 }
 
-func NewHandlerTracking(db *gorm.DB) Handler {
+func NewHandler(db *gorm.DB) Handler {
 	return Handler{DB: db}
 }
 

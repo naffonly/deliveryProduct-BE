@@ -23,7 +23,7 @@ func InitRoutesProtected(db *gorm.DB, router *gin.RouterGroup) {
 }
 
 func userRoutes(db *gorm.DB, router *gin.RouterGroup) {
-	user := userHandler.NewHandlerUser(db)
+	user := userHandler.NewHandler(db)
 
 	router.GET("/user", user.FindALl)
 	router.POST("/user", user.Create)
@@ -34,7 +34,7 @@ func userRoutes(db *gorm.DB, router *gin.RouterGroup) {
 }
 
 func logisticRoutes(db *gorm.DB, router *gin.RouterGroup) {
-	logistic := logisticHandler.NewHandlerUser(db)
+	logistic := logisticHandler.NewHandler(db)
 
 	router.GET("/logistic", logistic.FindAll)
 	router.GET("/logistic/:id", logistic.FindById)
@@ -44,7 +44,7 @@ func logisticRoutes(db *gorm.DB, router *gin.RouterGroup) {
 }
 
 func transactionRoutes(db *gorm.DB, router *gin.RouterGroup) {
-	transaction := transactionHandler.NewHandlerUser(db)
+	transaction := transactionHandler.NewHandler(db)
 	router.GET("/transaction", transaction.FindAll)
 	router.GET("/transaction/:id", transaction.FindById)
 	router.POST("/transaction", transaction.Create)
@@ -55,18 +55,18 @@ func transactionRoutes(db *gorm.DB, router *gin.RouterGroup) {
 }
 
 func trackingRoutes(db *gorm.DB, router *gin.RouterGroup) {
-	tracking := trackingHandler.NewHandlerTracking(db)
+	tracking := trackingHandler.NewHandler(db)
 	router.POST("/tracking", tracking.Create)
 	router.PUT("/tracking/:id", tracking.Update)
 	router.DELETE("/tracking/:id", tracking.Delete)
 }
 func profilRoutes(db *gorm.DB, router *gin.RouterGroup) {
-	auth := authHandler.NewHandlerUser(db)
+	auth := authHandler.NewHandler(db)
 	router.GET("/profil", auth.CurrentUser)
 }
 
 func authRoutes(db *gorm.DB, router *gin.RouterGroup) {
-	auth := authHandler.NewHandlerUser(db)
+	auth := authHandler.NewHandler(db)
 	router.POST("/register", auth.Register)
 	router.POST("/login", auth.Login)
 }
