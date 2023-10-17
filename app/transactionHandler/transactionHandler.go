@@ -2,6 +2,7 @@ package transactionHandler
 
 import (
 	"deliveryProduct/model/domain"
+	"deliveryProduct/utils/random"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/golodash/galidator"
@@ -53,6 +54,7 @@ func (h *Handler) Create(c *gin.Context) {
 		c.Abort()
 		return
 	}
+	Code := random.GetRandomStc()
 
 	newPayload := domain.Transaction{
 		UserID:     payload.UserID,
@@ -60,6 +62,7 @@ func (h *Handler) Create(c *gin.Context) {
 		Product:    payload.Product,
 		Status:     payload.Status,
 		Price:      payload.Price,
+		AirWayBill: Code,
 	}
 	h.DB.Create(&newPayload)
 	c.JSON(http.StatusOK, gin.H{
@@ -193,4 +196,21 @@ func (h *Handler) GetFile(ctx *gin.Context) {
 	ctx.Header("Content-Type", fileContentType)
 	ctx.Header("Content-Length", fmt.Sprintf("%d", fileInfo.Size()))
 	ctx.File(filePath)
+}
+
+func (h *Handler) GetTransactionByCode(c *gin.Context) {
+	code := c.Param("code")
+	var payload domain.Transaction
+	if err := h.DB.Preload("User").Preload("Product").Preload("Logistic").Preload("TrackingDelivery", "delete_at IS NULL").Where("air_way_bill=?", code).Find(&payload).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"data": "Not Found",
+		})
+		c.Abort()
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"mesage": "data found",
+		"data":   payload,
+	})
 }

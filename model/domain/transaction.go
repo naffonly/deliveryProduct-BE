@@ -18,6 +18,7 @@ type Transaction struct {
 	Status           string             `json:"status" gorm:"type:varchar(100);Not null" binding:"required"`
 	Price            string             `json:"price" gorm:"type:varchar(100);Not null" binding:"required"`
 	ImageDelivery    string             `json:"image_delivery" gorm:"type:varchar(100);null;"`
+	AirWayBill       string             `json:"air_way_bill" gorm:"type:varchar(16);Not null;"`
 	CreateAt         time.Time          `json:"create_at" gorm:"autoCreateTime"`
 	UpdateAt         time.Time          `json:"update_at" gorm:"autoUpdateTime"`
 	DeleteAt         gorm.DeletedAt     `json:"delete_at"`

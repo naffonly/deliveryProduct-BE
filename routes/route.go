@@ -12,7 +12,7 @@ import (
 
 func InitRoutesPublic(db *gorm.DB, router *gin.RouterGroup) {
 	authRoutes(db, router)
-
+	pubTrackingRoutes(db, router)
 }
 func InitRoutesProtected(db *gorm.DB, router *gin.RouterGroup) {
 	userRoutes(db, router)
@@ -67,6 +67,15 @@ func profilRoutes(db *gorm.DB, router *gin.RouterGroup) {
 
 func authRoutes(db *gorm.DB, router *gin.RouterGroup) {
 	auth := authHandler.NewHandler(db)
+	transaction := transactionHandler.NewHandler(db)
+
+	router.GET("/transaction/image/:id", transaction.GetFile)
 	router.POST("/register", auth.Register)
 	router.POST("/login", auth.Login)
+}
+
+func pubTrackingRoutes(db *gorm.DB, router *gin.RouterGroup) {
+	transaction := transactionHandler.NewHandler(db)
+
+	router.GET("/check/:code", transaction.GetTransactionByCode)
 }
