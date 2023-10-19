@@ -8,8 +8,8 @@ import (
 	"github.com/golodash/galidator"
 	"github.com/morkid/paginate"
 	"gorm.io/gorm"
+	"io/ioutil"
 	"net/http"
-	"os"
 	"path/filepath"
 	"time"
 )
@@ -156,46 +156,21 @@ func (h *Handler) UploadImage(c *gin.Context) {
 
 }
 
-func (h *Handler) GetFile(ctx *gin.Context) {
-	// Get the unique identifier of the file to be retrieved
-	id := ctx.Param("id")
+func (h *Handler) GetFile(c *gin.Context) {
+	id := c.Param("id")
 	var file domain.Transaction
 	err := h.DB.Where("id = ?", id).First(&file).Error
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{"error": "File not found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "File not found"})
 		return
 	}
-	// Define the path of the file to be retrieved
-
-	filePath := filepath.Join(file.ImageDelivery)
-	// Open the file
-	fileData, err := os.Open(filePath)
+	imageBytes, err := ioutil.ReadFile(file.ImageDelivery)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to open file"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	defer fileData.Close()
-	// Read the first 512 bytes of the file to determine its content type
-	fileHeader := make([]byte, 512)
-	_, err = fileData.Read(fileHeader)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read file"})
-		return
-	}
-	fileContentType := http.DetectContentType(fileHeader)
-	// Get the file info
-	fileInfo, err := fileData.Stat()
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get file info"})
-		return
-	}
-	// Set the headers for the file transfer and return the file
-	ctx.Header("Content-Description", "File Transfer")
-	ctx.Header("Content-Transfer-Encoding", "binary")
-	ctx.Header("Content-Disposition", fmt.Sprintf("attachment; filename=%s", file.ImageDelivery))
-	ctx.Header("Content-Type", fileContentType)
-	ctx.Header("Content-Length", fmt.Sprintf("%d", fileInfo.Size()))
-	ctx.File(filePath)
+	c.Header("Content-Type", "image/jpeg")
+	c.Data(http.StatusOK, "image/jpeg", imageBytes)
 }
 
 func (h *Handler) GetTransactionByCode(c *gin.Context) {
