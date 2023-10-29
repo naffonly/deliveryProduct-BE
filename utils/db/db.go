@@ -1,24 +1,25 @@
 package db
 
 import (
+	"deliveryProduct/config"
 	"deliveryProduct/model/domain"
 	"fmt"
-	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
-	"os"
 	"time"
 )
 
-func InitDB() *gorm.DB {
+func InitDB(config config.Config) *gorm.DB {
 
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-	conn := os.Getenv("DATABASE_URL")
-	db, err := gorm.Open(postgres.Open(conn), &gorm.Config{})
+	psql := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
+		config.DBHost,
+		config.DBUsername,
+		config.DBPassword,
+		config.DBName,
+		config.DBPort)
+
+	db, err := gorm.Open(postgres.Open(psql), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -28,6 +29,7 @@ func InitDB() *gorm.DB {
 }
 
 func Migration(db *gorm.DB) {
+
 	//fmt.Println("Migration")
 	//err := db.AutoMigrate(&domain.Logistic{}, &domain.User{}, &domain.Product{}, &domain.Transaction{}, &domain.TrackingDelivery{})
 	//fmt.Print("Drop Table")
@@ -36,6 +38,7 @@ func Migration(db *gorm.DB) {
 	//	return
 	//}
 	//fmt.Print("Seeding")
+
 	fmt.Println("Migration")
 
 	errs := db.AutoMigrate(&domain.Logistic{}, &domain.User{}, &domain.Product{}, &domain.Transaction{}, &domain.TrackingDelivery{})

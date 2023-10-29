@@ -1,9 +1,10 @@
 package main
 
 import (
-	"deliveryProduct/db"
+	configHandler "deliveryProduct/config"
 	"deliveryProduct/middleware"
 	"deliveryProduct/routes"
+	dbHandler "deliveryProduct/utils/db"
 	"github.com/gin-gonic/gin"
 )
 
@@ -12,7 +13,8 @@ func main() {
 }
 
 func SetupAppRouter() *gin.Engine {
-	db := db.InitDB()
+	config := configHandler.InitConfig()
+	db := dbHandler.InitDB(*config)
 	router := gin.Default()
 
 	public := router.Group("/api")

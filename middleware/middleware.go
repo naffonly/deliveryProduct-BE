@@ -6,10 +6,6 @@ import (
 	"net/http"
 )
 
-const (
-	SECRET = "secret"
-)
-
 func AuthValid(c *gin.Context) {
 	err := token.TokenValid(c)
 	if err != nil {
