@@ -16,10 +16,13 @@ func InitRoutesPublic(db *gorm.DB, router *gin.RouterGroup) {
 }
 func InitRoutesProtected(db *gorm.DB, router *gin.RouterGroup) {
 	userRoutes(db, router)
-	logisticRoutes(db, router)
 	transactionRoutes(db, router)
 	profilRoutes(db, router)
 	trackingRoutes(db, router)
+}
+
+func InitRoutesLogistic(r *gin.RouterGroup, h logisticHandler.LogisticHandlerInterface) {
+	logisticRoutes(r, h)
 }
 
 func userRoutes(db *gorm.DB, router *gin.RouterGroup) {
@@ -33,14 +36,13 @@ func userRoutes(db *gorm.DB, router *gin.RouterGroup) {
 
 }
 
-func logisticRoutes(db *gorm.DB, router *gin.RouterGroup) {
-	logistic := logisticHandler.NewHandler(db)
+func logisticRoutes(router *gin.RouterGroup, handlerInterface logisticHandler.LogisticHandlerInterface) {
 
-	router.GET("/logistic", logistic.FindAll)
-	router.GET("/logistic/:id", logistic.FindById)
-	router.POST("/logistic", logistic.Create)
-	router.PUT("/logistic/:id", logistic.Update)
-	router.DELETE("/logistic/:id", logistic.Delete)
+	//router.GET("/logistic", logistic.FindAll)
+	//router.GET("/logistic/:id", logistic.FindById)
+	router.POST("/logistic", handlerInterface.Create())
+	//router.PUT("/logistic/:id", logistic.Update)
+	//router.DELETE("/logistic/:id", logistic.Delete)
 }
 
 func transactionRoutes(db *gorm.DB, router *gin.RouterGroup) {
