@@ -41,8 +41,8 @@ func logisticRoutes(router *gin.RouterGroup, handlerInterface logisticHandler.Lo
 	//router.GET("/logistic", logistic.FindAll)
 	//router.GET("/logistic/:id", logistic.FindById)
 	router.POST("/logistic", handlerInterface.Create())
-	//router.PUT("/logistic/:id", logistic.Update)
-	//router.DELETE("/logistic/:id", logistic.Delete)
+	router.PUT("/logistic/:id", handlerInterface.Update())
+	router.DELETE("/logistic/:id", handlerInterface.Delete())
 }
 
 func transactionRoutes(db *gorm.DB, router *gin.RouterGroup) {
