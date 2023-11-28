@@ -75,7 +75,28 @@ func (h *logisticHandler) FindAll() gin.HandlerFunc {
 
 func (h *logisticHandler) FindById() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		id := c.Param("id")
+		if id == "" {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"msg": "id required",
+			})
+			c.Abort()
+			return
+		}
 
+		rs, err := h.Service.FindById(id)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"msg": err.Error(),
+			})
+			c.Abort()
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Success Find Data By Id",
+			"data":    rs,
+		})
 	}
 }
 

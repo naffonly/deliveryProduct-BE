@@ -63,9 +63,12 @@ func (l *logisticServiceImpl) FindAll(pagination dto.QueryParam) ([]domain.Logis
 	return logisticRes, DataResponse, nil
 }
 
-func (l *logisticServiceImpl) FindById(payload *domain.LogisticDto) (*domain.Logistic, error) {
-	//TODO implement me
-	panic("implement me")
+func (l *logisticServiceImpl) FindById(id string) (*domain.Logistic, error) {
+	rs := l.Repo.FindById(id)
+	if rs == nil {
+		return nil, errors.New("data Logistic not found")
+	}
+	return rs, nil
 }
 
 func (l *logisticServiceImpl) Update(payload *domain.LogisticDto, id string) (*domain.Logistic, error) {

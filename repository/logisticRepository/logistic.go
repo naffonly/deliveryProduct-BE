@@ -19,7 +19,7 @@ var (
 type LogisticRepoInterface interface {
 	Create(payload *domain.Logistic) (*domain.Logistic, error)
 	FindAll(pagination dto.QueryParam) ([]domain.Logistic, error)
-	FindById(payload []domain.Logistic) ([]domain.Logistic, error)
+	FindById(id string) *domain.Logistic
 	Update(payload *domain.Logistic, id string) (*domain.Logistic, error)
 	Delete(id string) error
 	GetPlatNumber(plat string) (*domain.Logistic, error)
@@ -75,9 +75,14 @@ func (repository *logisticRepo) FindAll(pagination dto.QueryParam) ([]domain.Log
 	return payload, nil
 }
 
-func (repository *logisticRepo) FindById(payload []domain.Logistic) ([]domain.Logistic, error) {
-	//TODO implement me
-	panic("implement me")
+func (repository *logisticRepo) FindById(id string) *domain.Logistic {
+	var model *domain.Logistic
+	rs := repository.DB.Where("id=?", id).First(&model)
+	if rs.Error != nil {
+		log.Println("Failed Find Data by id")
+		return nil
+	}
+	return model
 }
 
 func (repository *logisticRepo) Update(payload *domain.Logistic, id string) (*domain.Logistic, error) {
