@@ -10,10 +10,13 @@ import (
 	"gorm.io/gorm"
 )
 
+// InitRoutesPublic Public API
 func InitRoutesPublic(db *gorm.DB, router *gin.RouterGroup) {
 	authRoutes(db, router)
 	pubTrackingRoutes(db, router)
 }
+
+// InitRoutesProtected Private API
 func InitRoutesProtected(db *gorm.DB, router *gin.RouterGroup) {
 	userRoutes(db, router)
 	logisticRoutes(db, router)
