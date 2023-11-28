@@ -21,3 +21,9 @@ type LogisticDto struct {
 	Address    string `json:"address" binding:"required"`
 	PlatNumber string `json:"plat_number" binding:"required"`
 }
+
+type LogisticResponse struct {
+	Name       string `json:"name" binding:"required"`
+	Address    string `json:"address" binding:"required"`
+	PlatNumber string `json:"plat_number" binding:"required"`
+}
